@@ -1,0 +1,11 @@
+- name: Build and Verify with JaCoCo
+      run: |
+        cd Bai5
+        mvn clean verify
+
+    - name: Upload JaCoCo Report
+      if: always() # Luôn luôn chạy bước này kể cả khi test fail để ta xem mình test thiếu chỗ nào
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-html
+        path: Bai5/target/site/jacoco/
