@@ -1,11 +1,38 @@
-- name: Build and Verify with JaCoCo
-      run: |
-        cd Bai5
-        mvn clean verify
+name: Java CI with Maven and JaCoCo
 
-    - name: Upload JaCoCo Report
-      if: always() # Luôn luôn chạy bước này kể cả khi test fail để ta xem mình test thiếu chỗ nào
-      uses: actions/upload-artifact@v4
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout mã nguồn
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Cài đặt môi trường Java
+    - name: Set up JDK 25
+      uses: actions/setup-java@v4
       with:
-        name: jacoco-report-html
-        path: Bai5/target/site/jacoco/
+        java-version: '25' # Sửa lại theo phiên bản Java dự án của bạn
+        distribution: 'temurin'
+        cache: maven
+
+    # 3. Build project và chạy test & coverage check
+    # Lệnh 'verify' sẽ kích hoạt cả quá trình test và jacoco-check đã cấu hình trong pom.xml
+    - name: Build and Check Coverage with Maven
+      run: mvn -B verify
+
+    # 4. Upload báo cáo JaCoCo (chạy luôn cả khi bước build bị fail do coverage thấp)
+    - name: Upload JaCoCo Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always() # Đảm bảo báo cáo luôn được upload để bạn xem tại sao lại fail
+      with:
+        name: jacoco-report
+        path: target/site/jacoco/
+        retention-days: 7 # Giữ báo cáo trong 7 ngày
