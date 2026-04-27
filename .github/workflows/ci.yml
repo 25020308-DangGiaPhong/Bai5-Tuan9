@@ -27,6 +27,7 @@ jobs:
     # Lệnh 'verify' sẽ kích hoạt cả quá trình test và jacoco-check đã cấu hình trong pom.xml
     - name: Build and Check Coverage with Maven
       run: mvn -B verify
+      working-directory: Bai5
 
     # 4. Upload báo cáo JaCoCo (chạy luôn cả khi bước build bị fail do coverage thấp)
     - name: Upload JaCoCo Coverage Report
